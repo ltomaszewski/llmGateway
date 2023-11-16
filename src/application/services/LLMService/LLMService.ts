@@ -4,7 +4,6 @@ import { LLMResult } from "./LLMResult";
 import { localLLMProcessingQueue } from "./processing/LocalLLMProcessingQueue";
 import { openAiProcessingFunction } from "./processing/OpenAiProcessingFunction";
 
-
 export class LLMService {
     private openAiQueue = new LLMRequestProcessingQueue(openAiProcessingFunction)
     private localLLMQueue = new LLMRequestProcessingQueue(localLLMProcessingQueue)

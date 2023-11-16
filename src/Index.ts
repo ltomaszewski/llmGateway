@@ -1,7 +1,6 @@
 // Importing CLIConfiguration class for handling Command Line Interface (CLI) arguments
 import 'dotenv/config';
 import express from "express";
-import { LLMRequestProcessingQueue } from "./application/services/llmService/LLMRequestProcessingQueue";
 import { CLIConfiguration } from "./config/CLIConfiguration";
 import { LLMRequestRESTService } from "./application/services/REST/LLMRequestRESTService";
 import { Env, dotEnv } from "./config/Constants";
