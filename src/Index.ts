@@ -1,5 +1,9 @@
 // Importing CLIConfiguration class for handling Command Line Interface (CLI) arguments
+import express from "express";
+import { LLMRequestProcessingQueue } from "./application/services/LLMRequestProcessingService";
 import { CLIConfiguration } from "./config/CLIConfiguration";
+import { LLMRequestRESTService } from "./application/services/REST/LLMRequestRESTService";
+import { Env } from "./config/Constants";
 
 // Extracting command line arguments
 const args = process.argv;
@@ -12,6 +16,23 @@ console.log("Application started with environment: " + configuration.env);
 
 // Asynchronous function for database operations
 (async () => {
-    console.log("LLM Gatway is ready to go");
-    process.exit(0)
+    const processingService = new LLMRequestProcessingQueue()
+
+    // Setup REST Server
+    const app = express();
+    const PORT = configuration.env == Env.Prod ? 998 : 698
+    app.use(express.json());
+
+    // Create REST services
+    const baseApi = "/api/v1";
+    const llmRequestRESTService = new LLMRequestRESTService(processingService);
+
+    // Install REST services
+    llmRequestRESTService.installEndpoints(baseApi, app);
+
+    // Start the server
+    app.listen(PORT, () => {
+        console.log(`LLM Gatway is running on port ${PORT}`);
+    });
+
 })();
