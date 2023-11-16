@@ -4,7 +4,12 @@ import { LLMResult } from "./LLMResult";
 
 type ProcessingFunction = (request: LMMRequestDTO) => Promise<void>;
 
+interface LLMRequestObserver {
+    onRequestProcessed: (requestId: string, result: LLMResult) => void;
+}
+
 export class LLMRequestProcessingQueue {
+    private observers: LLMRequestObserver[] = []; // Array to hold observers
     private queue: any[] = [];
     private maxConcurrent: number = 5; // Max number of concurrent operations
     private processingFunction: ProcessingFunction;
@@ -33,6 +38,21 @@ export class LLMRequestProcessingQueue {
         return undefined; // Indicate that the result is not available (either not yet processed or already fetched)
     }
 
+    // Method to subscribe an observer
+    subscribe(observer: LLMRequestObserver): void {
+        this.observers.push(observer);
+    }
+
+    // Method to unsubscribe an observer
+    unsubscribe(observer: LLMRequestObserver): void {
+        this.observers = this.observers.filter(obs => obs !== observer);
+    }
+
+    // Method to notify all observers
+    notifyObservers(requestId: string, result: LLMResult): void {
+        this.observers.forEach(observer => observer.onRequestProcessed(requestId, result));
+    }
+
     private tryProcessNext() {
         if (this.queue.length > 0 && this.currentlyProcessing < this.maxConcurrent) {
             const request = this.queue.shift();
@@ -44,6 +64,7 @@ export class LLMRequestProcessingQueue {
                         console.log(`Processed: ${requestId}`);
                         const llmResult = new LLMResult(requestId, request, result, undefined)
                         this.results.set(requestId, llmResult);
+                        this.notifyObservers(requestId, llmResult);
                         this.currentlyProcessing--;
                         this.tryProcessNext();
                     })
@@ -51,6 +72,7 @@ export class LLMRequestProcessingQueue {
                         console.error(`Error processing request: ${error}`);
                         const llmResult = new LLMResult(requestId, request, undefined, error.toString())
                         this.results.set(requestId, llmResult);
+                        this.notifyObservers(requestId, llmResult);
                         this.currentlyProcessing--;
                         this.tryProcessNext();
                     });
