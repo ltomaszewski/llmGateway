@@ -1,12 +1,12 @@
 import express from "express";
 import { LMMRequestDTO } from "../../dtos/LMMRequestDTO";
-import { LLMRequestProcessingQueue } from "../LLMService/LLMRequestProcessingQueue";
+import { LLMService } from "../llmService/LLMService";
 
 export class LLMRequestRESTService {
-    private processingQueue: LLMRequestProcessingQueue;
+    private llmService: LLMService;
 
-    constructor(processingQueue: LLMRequestProcessingQueue) {
-        this.processingQueue = processingQueue; // Initialize processing queue
+    constructor(llmService: LLMService) {
+        this.llmService = llmService; // Initialize processing queue
     }
 
     installEndpoints(basePath: string, app: express.Application) {
@@ -20,7 +20,7 @@ export class LLMRequestRESTService {
                 }
 
                 // Enqueue the request for processing
-                const requestId = this.processingQueue.enqueue(lmmRequest);
+                const requestId = this.llmService.enqueue(lmmRequest);
                 res.status(201).json({ requestId });
             } catch (error: any) {
                 res.status(400).json({ error: error.message });
@@ -28,9 +28,13 @@ export class LLMRequestRESTService {
         });
 
         app.get(basePath + "/request/status/:id", async (req, res) => {
-            const id = req.params.id
-            // Implement logic to return the status of the request
-            res.status(201).json(this.processingQueue.getResult(id))
+            try {
+                const id = req.params.id
+                // Implement logic to return the status of the request
+                res.status(201).json(this.llmService.getResult(id))
+            } catch (error: any) {
+                res.status(400).json({ error: error.message });
+            }
         });
     }
 }

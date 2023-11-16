@@ -11,7 +11,7 @@ interface LLMRequestObserver {
 export class LLMRequestProcessingQueue {
     private observers: LLMRequestObserver[] = []; // Array to hold observers
     private queue: any[] = [];
-    private maxConcurrent: number = 5; // Max number of concurrent operations
+    private maxConcurrent: number = 2; // Max number of concurrent operations
     private processingFunction: ProcessingFunction;
     private currentlyProcessing: number = 0;
     public processingTimeout: number = 5000; // 5 seconds timeout, can be changed

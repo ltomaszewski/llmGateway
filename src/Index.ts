@@ -1,10 +1,11 @@
 // Importing CLIConfiguration class for handling Command Line Interface (CLI) arguments
 import 'dotenv/config';
 import express from "express";
-import { LLMRequestProcessingQueue } from "./application/services/LLMService/LLMRequestProcessingQueue";
+import { LLMRequestProcessingQueue } from "./application/services/llmService/LLMRequestProcessingQueue";
 import { CLIConfiguration } from "./config/CLIConfiguration";
 import { LLMRequestRESTService } from "./application/services/REST/LLMRequestRESTService";
 import { Env, dotEnv } from "./config/Constants";
+import { LLMService } from './application/services/llmService/LLMService';
 
 // Extracting command line arguments
 const args = process.argv;
@@ -17,7 +18,7 @@ console.log("Application started with environment: " + configuration.env);
 
 // Asynchronous function for database operations
 (async () => {
-    const processingService = new LLMRequestProcessingQueue()
+    const llmService = new LLMService()
 
     // Setup REST Server
     const app = express();
@@ -26,7 +27,7 @@ console.log("Application started with environment: " + configuration.env);
 
     // Create REST services
     const baseApi = "/api/v1";
-    const llmRequestRESTService = new LLMRequestRESTService(processingService);
+    const llmRequestRESTService = new LLMRequestRESTService(llmService);
 
     // Install REST services
     llmRequestRESTService.installEndpoints(baseApi, app);
