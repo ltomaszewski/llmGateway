@@ -1,0 +1,17 @@
+{
+  "name": "llmgateway",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc --build --clean && tsc && pm2 start src/ecosystem.config.cjs --env production",
+    "stop": "pm2 stop all"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/rethinkdb": "^2.3.20",
+    "rethinkdb": "^2.4.2"
+  }
+}
