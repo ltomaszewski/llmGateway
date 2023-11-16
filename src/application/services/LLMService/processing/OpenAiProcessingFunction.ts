@@ -1,12 +1,12 @@
 import { dotEnv } from "../../../../config/Constants";
-import { LMMRequestDTO } from "../../../dtos/LMMRequestDTO";
+import { LLMRequestDTO } from "../../../dtos/LLMRequestDTO";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
     apiKey: dotEnv.OPENAI_KEY,
 });
 
-export const openAiProcessingFunction = async (request: LMMRequestDTO): Promise<any> => {
+export const openAiProcessingFunction = async (request: LLMRequestDTO): Promise<any> => {
     const response = await openai.chat.completions.create({
         model: request.model,
         messages: [

@@ -4,7 +4,7 @@ export enum Provider {
     HuggingFace = 'huggingface'
 }
 
-export class LMMRequestDTO {
+export class LLMRequestDTO {
     readonly system: string;
     readonly prompt: string;
     readonly provider: Provider;
@@ -25,8 +25,8 @@ export class LMMRequestDTO {
         this.callback = callback;
     }
 
-    static createFromObject(obj: any): LMMRequestDTO {
-        return new LMMRequestDTO(
+    static createFromObject(obj: any): LLMRequestDTO {
+        return new LLMRequestDTO(
             obj.system,
             obj.prompt,
             Provider[obj.provider as keyof typeof Provider], // Converts the string to the corresponding enum value

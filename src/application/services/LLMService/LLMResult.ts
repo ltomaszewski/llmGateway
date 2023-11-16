@@ -1,14 +1,14 @@
-import { LMMRequestDTO } from "../../dtos/LMMRequestDTO";
+import { LLMRequestDTO } from "../../dtos/LLMRequestDTO";
 
 export class LLMResult {
     readonly requestId: string;
-    readonly request: LMMRequestDTO;
+    readonly request: LLMRequestDTO;
     readonly result: any | undefined;
     readonly error: any | undefined;
 
     constructor(
         requestId: string,
-        request: LMMRequestDTO,
+        request: LLMRequestDTO,
         result: any | undefined,
         error: any | undefined
     ) {

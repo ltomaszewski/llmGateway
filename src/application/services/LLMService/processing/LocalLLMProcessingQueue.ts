@@ -1,10 +1,10 @@
-import { LMMRequestDTO } from "../../../dtos/LMMRequestDTO";
+import { LLMRequestDTO } from "../../../dtos/LLMRequestDTO";
 import fetch from 'node-fetch';
 
 const apiUrl = 'http://localhost:11434/api/generate';
 
 
-export const localLLMProcessingQueue = async (request: LMMRequestDTO): Promise<any> => {
+export const localLLMProcessingQueue = async (request: LLMRequestDTO): Promise<any> => {
     const requestData = {
         model: request.model,
         prompt: 'System: ' + request.system + '; User Prompt: ' + request.prompt,

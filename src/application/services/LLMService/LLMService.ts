@@ -1,5 +1,6 @@
-import { LMMRequestDTO, Provider } from "../../dtos/LMMRequestDTO";
-import { LLMRequestProcessingQueue } from "./LLMRequestProcessingQueue";
+import { LLMRequestDTO, Provider } from "../../dtos/LLMRequestDTO";
+import { MessageObserver, WebSocketServer } from "../WebSocketServer";
+import { LLMRequestObserver, LLMRequestProcessingQueue } from "./LLMRequestProcessingQueue";
 import { LLMResult } from "./LLMResult";
 import { localLLMProcessingQueue } from "./processing/LocalLLMProcessingQueue";
 import { openAiProcessingFunction } from "./processing/OpenAiProcessingFunction";
@@ -7,10 +8,34 @@ import { openAiProcessingFunction } from "./processing/OpenAiProcessingFunction"
 export class LLMService {
     private openAiQueue = new LLMRequestProcessingQueue(openAiProcessingFunction)
     private localLLMQueue = new LLMRequestProcessingQueue(localLLMProcessingQueue)
+    private wss: WebSocketServer
 
-    constructor() { }
+    constructor(wss: WebSocketServer) {
+        this.wss = wss
 
-    enqueue(request: LMMRequestDTO): string {
+        const incomeMessageProcessor: MessageObserver = {
+            update: (message: any) => {
+                const llmRequest = LLMRequestDTO.createFromObject(message)
+                // Validate the request fields
+                if (!llmRequest.system || !llmRequest.prompt || !llmRequest.provider || !llmRequest.model || !llmRequest.callback) {
+                    throw new Error("All fields are required");
+                }
+                this.enqueue(llmRequest);
+            }
+        }
+
+        const webSocketResultProcessor: LLMRequestObserver = {
+            onRequestProcessed: (requestId: string, result: LLMResult) => {
+                this.wss.broadcastMessage(result);
+            }
+        };
+
+        this.wss.addMessageObserver(incomeMessageProcessor);
+        this.openAiQueue.subscribe(webSocketResultProcessor)
+        this.localLLMQueue.subscribe(webSocketResultProcessor)
+    }
+
+    enqueue(request: LLMRequestDTO): string {
         switch (request.provider) {
             case Provider.OpenAI:
                 return this.openAiQueue.enqueue(request);

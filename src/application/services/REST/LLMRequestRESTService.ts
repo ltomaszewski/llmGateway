@@ -1,5 +1,5 @@
 import express from "express";
-import { LMMRequestDTO } from "../../dtos/LMMRequestDTO";
+import { LLMRequestDTO } from "../../dtos/LLMRequestDTO";
 import { LLMService } from "../llmService/LLMService";
 
 export class LLMRequestRESTService {
@@ -12,7 +12,7 @@ export class LLMRequestRESTService {
     installEndpoints(basePath: string, app: express.Application) {
         app.post(basePath + "/request/submit", async (req, res) => {
             try {
-                const lmmRequest = LMMRequestDTO.createFromObject(req.body);
+                const lmmRequest = LLMRequestDTO.createFromObject(req.body);
 
                 // Validate the request fields
                 if (!lmmRequest.system || !lmmRequest.prompt || !lmmRequest.provider || !lmmRequest.model || !lmmRequest.callback) {

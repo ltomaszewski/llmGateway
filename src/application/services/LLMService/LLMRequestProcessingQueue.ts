@@ -1,10 +1,10 @@
-import { LMMRequestDTO } from "../../dtos/LMMRequestDTO";
+import { LLMRequestDTO } from "../../dtos/LLMRequestDTO";
 import { v4 as uuidv4 } from 'uuid';
 import { LLMResult } from "./LLMResult";
 
-type ProcessingFunction = (request: LMMRequestDTO) => Promise<void>;
+type ProcessingFunction = (request: LLMRequestDTO) => Promise<void>;
 
-interface LLMRequestObserver {
+export interface LLMRequestObserver {
     onRequestProcessed: (requestId: string, result: LLMResult) => void;
 }
 
@@ -22,7 +22,7 @@ export class LLMRequestProcessingQueue {
         this.processingFunction = processingFunction || this.defaultProcessingFunction;
     }
 
-    enqueue(request: LMMRequestDTO): string {
+    enqueue(request: LLMRequestDTO): string {
         const requestId = uuidv4(); // Generate a UUID for the request
         this.queue.push({ request, requestId });
         this.tryProcessNext();
@@ -80,7 +80,7 @@ export class LLMRequestProcessingQueue {
         }
     }
 
-    private async processWithTimeout(request: LMMRequestDTO, requestId: number): Promise<any> {
+    private async processWithTimeout(request: LLMRequestDTO, requestId: number): Promise<any> {
         const timeoutPromise = new Promise<any>((_, reject) => {
             setTimeout(() => reject(new Error('Processing timed out')), this.processingTimeout);
         });
@@ -91,7 +91,7 @@ export class LLMRequestProcessingQueue {
         ]);
     }
 
-    private async defaultProcessingFunction(request: LMMRequestDTO): Promise<any> {
+    private async defaultProcessingFunction(request: LLMRequestDTO): Promise<any> {
         // Default processing logic
         console.log(`Processing request: ${JSON.stringify(request)}`);
         return new Promise(resolve => setTimeout(() => resolve(`Processed: ${JSON.stringify(request)}`), 3000));
