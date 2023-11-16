@@ -33,6 +33,6 @@ console.log("Application started with environment: " + configuration.env);
 
     // Start the server
     app.listen(PORT, () => {
-        console.log(`LLM Gatway is running on port ${PORT}` + " " + dotEnv.OPENAI_KEY);
+        console.log(`LLM Gatway is running on port ${PORT}`);
     });
 })();
