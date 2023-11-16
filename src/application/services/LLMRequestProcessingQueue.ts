@@ -1,5 +1,6 @@
 import { LMMRequestDTO } from "../dtos/LMMRequestDTO";
 import { v4 as uuidv4 } from 'uuid';
+import { LLMResult } from "./LLMResult";
 
 type ProcessingFunction = (request: LMMRequestDTO) => Promise<void>;
 
@@ -8,8 +9,8 @@ export class LLMRequestProcessingQueue {
     private maxConcurrent: number = 5; // Max number of concurrent operations
     private processingFunction: ProcessingFunction;
     private currentlyProcessing: number = 0;
-    public processingTimeout: number = 15000; // 5 seconds timeout, can be changed
-    private results: Map<number, any> = new Map(); // Store results with requestId as key
+    public processingTimeout: number = 5000; // 5 seconds timeout, can be changed
+    private results: Map<string, any> = new Map(); // Store results with requestId as key
 
     constructor(processingFunction?: ProcessingFunction, maxConcurrent: number = 5) {
         this.maxConcurrent = maxConcurrent;
@@ -23,13 +24,13 @@ export class LLMRequestProcessingQueue {
         return requestId;
     }
 
-    getResult(requestId: number): any {
+    getResult(requestId: string): LLMResult | undefined {
         if (this.results.has(requestId)) {
             const result = this.results.get(requestId);
             this.results.delete(requestId);  // Remove the result after fetching
             return result;
         }
-        return null; // Indicate that the result is not available (either not yet processed or already fetched)
+        return undefined; // Indicate that the result is not available (either not yet processed or already fetched)
     }
 
     private tryProcessNext() {
@@ -41,13 +42,15 @@ export class LLMRequestProcessingQueue {
                 this.processWithTimeout(request.request, requestId)
                     .then((result) => {
                         console.log(`Processed: ${requestId}`);
-                        this.results.set(requestId, { request, result });
+                        const llmResult = new LLMResult(requestId, request, result, undefined)
+                        this.results.set(requestId, llmResult);
                         this.currentlyProcessing--;
                         this.tryProcessNext();
                     })
                     .catch(error => {
-                        this.results.set(requestId, { request, error: error.toString() });
                         console.error(`Error processing request: ${error}`);
+                        const llmResult = new LLMResult(requestId, request, undefined, error.toString())
+                        this.results.set(requestId, llmResult);
                         this.currentlyProcessing--;
                         this.tryProcessNext();
                     });
@@ -69,6 +72,6 @@ export class LLMRequestProcessingQueue {
     private async defaultProcessingFunction(request: LMMRequestDTO): Promise<any> {
         // Default processing logic
         console.log(`Processing request: ${JSON.stringify(request)}`);
-        return new Promise(resolve => setTimeout(() => resolve(`Processed: ${JSON.stringify(request)}`), 5000));
+        return new Promise(resolve => setTimeout(() => resolve(`Processed: ${JSON.stringify(request)}`), 3000));
     }
 }

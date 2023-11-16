@@ -1,6 +1,6 @@
 // Importing CLIConfiguration class for handling Command Line Interface (CLI) arguments
 import express from "express";
-import { LLMRequestProcessingQueue } from "./application/services/LLMRequestProcessingService";
+import { LLMRequestProcessingQueue } from "./application/services/LLMRequestProcessingQueue";
 import { CLIConfiguration } from "./config/CLIConfiguration";
 import { LLMRequestRESTService } from "./application/services/REST/LLMRequestRESTService";
 import { Env } from "./config/Constants";

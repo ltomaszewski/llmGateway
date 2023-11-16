@@ -1,6 +1,6 @@
 import express from "express";
 import { LMMRequestDTO } from "../../dtos/LMMRequestDTO";
-import { LLMRequestProcessingQueue } from "../LLMRequestProcessingService";
+import { LLMRequestProcessingQueue } from "../LLMRequestProcessingQueue";
 
 export class LLMRequestRESTService {
     private processingQueue: LLMRequestProcessingQueue;
@@ -28,8 +28,7 @@ export class LLMRequestRESTService {
         });
 
         app.get(basePath + "/request/status/:id", async (req, res) => {
-            // TODO: Validate if it works
-            const id = parseInt(req.params.id, 10);
+            const id = req.params.id
             // Implement logic to return the status of the request
             res.status(201).json(this.processingQueue.getResult(id))
         });
