@@ -1,4 +1,4 @@
-import { LMMRequestDTO } from "../dtos/LMMRequestDTO";
+import { LMMRequestDTO } from "../../dtos/LMMRequestDTO";
 import { v4 as uuidv4 } from 'uuid';
 import { LLMResult } from "./LLMResult";
 

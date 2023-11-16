@@ -1,9 +1,10 @@
 // Importing CLIConfiguration class for handling Command Line Interface (CLI) arguments
+import 'dotenv/config';
 import express from "express";
-import { LLMRequestProcessingQueue } from "./application/services/LLMRequestProcessingQueue";
+import { LLMRequestProcessingQueue } from "./application/services/LLMService/LLMRequestProcessingQueue";
 import { CLIConfiguration } from "./config/CLIConfiguration";
 import { LLMRequestRESTService } from "./application/services/REST/LLMRequestRESTService";
-import { Env } from "./config/Constants";
+import { Env, dotEnv } from "./config/Constants";
 
 // Extracting command line arguments
 const args = process.argv;
@@ -32,7 +33,6 @@ console.log("Application started with environment: " + configuration.env);
 
     // Start the server
     app.listen(PORT, () => {
-        console.log(`LLM Gatway is running on port ${PORT}`);
+        console.log(`LLM Gatway is running on port ${PORT}` + " " + dotEnv.OPENAI_KEY);
     });
-
 })();

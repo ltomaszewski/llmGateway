@@ -1,6 +1,6 @@
 import express from "express";
 import { LMMRequestDTO } from "../../dtos/LMMRequestDTO";
-import { LLMRequestProcessingQueue } from "../LLMRequestProcessingQueue";
+import { LLMRequestProcessingQueue } from "../LLMService/LLMRequestProcessingQueue";
 
 export class LLMRequestRESTService {
     private processingQueue: LLMRequestProcessingQueue;

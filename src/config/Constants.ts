@@ -1,3 +1,4 @@
+
 // Enumeration representing different environment modes: Development and Production
 export enum Env {
     Dev, // Development environment
@@ -14,3 +15,19 @@ export const DatabasePort = 28015;
 export const DatabaseForceDrop = false;
 
 export const baseDatabaseName = "LLM_GATEWAY";
+
+function getEnvVar(key: string): string {
+    const value = process.env[key];
+    if (value === undefined) {
+        throw new Error(`Environment variable ${key} is not set`);
+    }
+    return value;
+}
+
+export interface ProcessEnv {
+    OPENAI_KEY: string;
+}
+
+export const dotEnv: ProcessEnv = {
+    OPENAI_KEY: getEnvVar('OPENAI_KEY'),
+};
