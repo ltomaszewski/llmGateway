@@ -1,6 +1,7 @@
 import { LLMRequestDTO } from "../../dtos/LLMRequestDTO";
 import { v4 as uuidv4 } from 'uuid';
 import { LLMResult } from "./LLMResult";
+import { currentTimestampAndDate } from "../../helpers/Utils";
 
 type ProcessingFunction = (request: LLMRequestDTO) => Promise<void>;
 
@@ -61,15 +62,15 @@ export class LLMRequestProcessingQueue {
                 this.currentlyProcessing++;
                 this.processWithTimeout(request.request, requestId)
                     .then((result) => {
-                        console.log(`Processed: ${requestId}`);
                         const llmResult = new LLMResult(requestId, request, result, undefined)
                         this.results.set(requestId, llmResult);
                         this.notifyObservers(requestId, llmResult);
+                        console.log(currentTimestampAndDate() + ` Processed: ${requestId}`);
                         this.currentlyProcessing--;
                         this.tryProcessNext();
                     })
                     .catch(error => {
-                        console.error(`Error processing request: ${error}`);
+                        console.error(currentTimestampAndDate() + ` Error processing request: ${error}`);
                         const llmResult = new LLMResult(requestId, request, undefined, error.toString())
                         this.results.set(requestId, llmResult);
                         this.notifyObservers(requestId, llmResult);
@@ -93,7 +94,7 @@ export class LLMRequestProcessingQueue {
 
     private async defaultProcessingFunction(request: LLMRequestDTO): Promise<any> {
         // Default processing logic
-        console.log(`Processing request: ${JSON.stringify(request)}`);
+        console.log(currentTimestampAndDate() + ` Processing request: ${JSON.stringify(request)}`);
         return new Promise(resolve => setTimeout(() => resolve(`Processed: ${JSON.stringify(request)}`), 3000));
     }
 }

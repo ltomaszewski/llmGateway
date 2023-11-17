@@ -1,4 +1,5 @@
 import { LLMRequestDTO, Provider } from "../../dtos/LLMRequestDTO";
+import { currentTimestampAndDate } from "../../helpers/Utils";
 import { MessageObserver, WebSocketServer } from "../WebSocketServer";
 import { LLMRequestObserver, LLMRequestProcessingQueue } from "./LLMRequestProcessingQueue";
 import { LLMResult } from "./LLMResult";
@@ -16,16 +17,17 @@ export class LLMService {
 
         const incomeMessageProcessor: MessageObserver = {
             update: (message: any) => {
-                const llmRequest = LLMRequestDTO.createFromObject(message)
+                const request = LLMRequestDTO.createFromObject(message)
+                console.log(currentTimestampAndDate() + ` Received message: ${request.id}`);
                 try {
                     // Validate the request fields
-                    if (!llmRequest.system || !llmRequest.prompt || !llmRequest.provider || !llmRequest.model || !llmRequest.callback || !llmRequest.id) {
+                    if (!request.system || !request.prompt || !request.provider || !request.model || !request.id) {
                         throw new Error("All fields are required");
                     }
-                    this.enqueue(llmRequest);
+                    this.enqueue(request);
                 } catch (error: any) {
-                    const requestId = llmRequest.id === undefined ? uuidv4() : llmRequest.id;
-                    const result = new LLMResult(requestId, llmRequest, undefined, error.message);
+                    const requestId = request.id === undefined ? uuidv4() : request.id;
+                    const result = new LLMResult(requestId, request, undefined, error.message);
                     this.wss.broadcastMessage(result)
                 }
             }

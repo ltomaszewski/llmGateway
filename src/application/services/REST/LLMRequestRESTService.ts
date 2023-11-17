@@ -15,7 +15,7 @@ export class LLMRequestRESTService {
                 const lmmRequest = LLMRequestDTO.createFromObject(req.body);
 
                 // Validate the request fields
-                if (!lmmRequest.system || !lmmRequest.prompt || !lmmRequest.provider || !lmmRequest.model || !lmmRequest.callback) {
+                if (!lmmRequest.system || !lmmRequest.prompt || !lmmRequest.provider || !lmmRequest.model) {
                     throw new Error("All fields are required");
                 }
 

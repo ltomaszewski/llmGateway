@@ -1,6 +1,7 @@
 import { dotEnv } from "../../../../config/Constants";
 import { LLMRequestDTO } from "../../../dtos/LLMRequestDTO";
 import OpenAI from "openai";
+import { currentTimestampAndDate } from "../../../helpers/Utils";
 
 const openai = new OpenAI({
     apiKey: dotEnv.OPENAI_KEY,
@@ -27,7 +28,7 @@ export const openAiProcessingFunction = async (request: LLMRequestDTO): Promise<
     });
 
     // Custom logic for processing the request
-    console.log(`Custom OpenAi Processing: ${response}`);
+    console.log(currentTimestampAndDate() + ` OpenAi Processed: ${request.id}, prompt: ${request.prompt.slice(0, 80)}` + (request.prompt.length > 80 ? '...' : ''));;
     // Simulate processing with a delay
     return new Promise(resolve => resolve(response));
 };

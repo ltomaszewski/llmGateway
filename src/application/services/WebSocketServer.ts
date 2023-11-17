@@ -1,5 +1,6 @@
 import WebSocket from 'ws';
 import { dotEnv } from '../../config/Constants';
+import { currentTimestampAndDate } from '../helpers/Utils';
 
 // Define an observer interface
 export interface MessageObserver {
@@ -20,7 +21,7 @@ export class WebSocketServer {
     public async connect(): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             this.wss.on('listening', () => {
-                console.log(`WebSocket server is listening on port ${this.wss.options.port}`);
+                console.log(currentTimestampAndDate() + ` LLMGateway WSS server is listening on port ${this.wss.options.port}`);
                 resolve();
             });
 
@@ -36,7 +37,7 @@ export class WebSocketServer {
 
         // Perform authentication based on the token (you can use a more secure method)
         if (this.isValidAuthToken(token)) {
-            console.log('Client connected and authorized.');
+            console.log(currentTimestampAndDate() + " Client connected and authorized.");
             this.authorizedClients.add(socket);
 
             // Set up a ping interval for the new connection
@@ -46,7 +47,7 @@ export class WebSocketServer {
                     // Set a timeout to close the connection if no pong response is received within 20 seconds
                     const pingTimeout = setTimeout(() => {
                         if (socket.readyState === WebSocket.OPEN) {
-                            console.log('No pong response received within 20 seconds. Closing the connection.');
+                            console.log(currentTimestampAndDate() + " No pong response received within 20 seconds. Closing the connection.");
                             socket.terminate(); // Close the connection
                         }
                     }, 3000); // Expect a pong response within 20 seconds
@@ -60,18 +61,17 @@ export class WebSocketServer {
 
             // Event handler for incoming messages from authorized clients
             socket.on('message', (message: string) => {
-                console.log(`Received message: ${message}`);
                 this.notifyObservers(JSON.parse(message));
             });
 
             // Event handler for client disconnection
             socket.on('close', () => {
-                console.log('Client disconnected.');
+                console.log(currentTimestampAndDate() + ' Client disconnected.');
                 this.authorizedClients.delete(socket);
                 clearInterval(pingInterval); // Clean up the ping interval when the client disconnects
             });
         } else {
-            console.log('Client connection unauthorized. Closing connection.');
+            console.log(currentTimestampAndDate() + ' Client connection unauthorized. Closing connection.');
             socket.close();
         }
     };
