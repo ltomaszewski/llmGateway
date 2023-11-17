@@ -1,14 +1,15 @@
 import WebSocket from 'ws';
+import { dotEnv } from '../../config/Constants';
 
 // Define an observer interface
 export interface MessageObserver {
     update(message: any): void;
 }
 
-
 export class WebSocketServer {
     private wss: WebSocket.Server;
     private messageObservers: MessageObserver[] = [];
+    private authorizedClients: Set<WebSocket> = new Set();
 
     constructor(port: number) {
         this.wss = new WebSocket.Server({ port });
@@ -29,23 +30,30 @@ export class WebSocketServer {
         });
     }
 
-    private handleConnection = (socket: WebSocket) => {
-        console.log('Client connected.');
+    private handleConnection = (socket: WebSocket, request: any) => {
+        // Extract authentication token from the WebSocket request
+        const token = request.headers['token'];
 
-        // Event handler for incoming messages from clients
-        socket.on('message', (message: string) => {
-            console.log(`Received message: ${message}`);
+        // Perform authentication based on the token (you can use a more secure method)
+        if (this.isValidAuthToken(token)) {
+            console.log('Client connected and authorized.');
+            this.authorizedClients.add(socket);
 
-            // Notify all registered observers with the received message
-            this.messageObservers.forEach((observer) => {
-                observer.update(JSON.parse(message));
+            // Event handler for incoming messages from authorized clients
+            socket.on('message', (message: string) => {
+                console.log(`Received message: ${message}`);
+                this.notifyObservers(JSON.parse(message));
             });
-        });
 
-        // Event handler for client disconnection
-        socket.on('close', () => {
-            console.log('Client disconnected.');
-        });
+            // Event handler for client disconnection
+            socket.on('close', () => {
+                console.log('Client disconnected.');
+                this.authorizedClients.delete(socket);
+            });
+        } else {
+            console.log('Client connection unauthorized. Closing connection.');
+            socket.close();
+        }
     };
 
 
@@ -68,8 +76,18 @@ export class WebSocketServer {
         this.messageObservers.push(observer);
     }
 
+    private notifyObservers(message: any) {
+        this.messageObservers.forEach((observer) => {
+            observer.update(message);
+        });
+    }
+
     // Method to close the server
     public closeServer() {
         this.wss.close();
+    }
+
+    private isValidAuthToken(token: string | string[] | undefined): boolean {
+        return token === dotEnv.WSS_AUTH_TOKEN;
     }
 }
