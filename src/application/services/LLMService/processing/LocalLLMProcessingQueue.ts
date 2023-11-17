@@ -9,7 +9,7 @@ export const localLLMProcessingQueue = async (request: LLMRequestDTO): Promise<a
     const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => {
             reject(new Error('Request timed out'));
-        }, 30000);
+        }, 20000);
     });
 
 

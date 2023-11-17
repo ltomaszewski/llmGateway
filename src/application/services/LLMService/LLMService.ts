@@ -8,8 +8,8 @@ import { openAiProcessingFunction } from "./processing/OpenAiProcessingFunction.
 import { v4 as uuidv4 } from 'uuid';
 
 export class LLMService {
-    private openAiQueue = new LLMRequestProcessingQueue(openAiProcessingFunction)
-    private localLLMQueue = new LLMRequestProcessingQueue(localLLMProcessingQueue)
+    private openAiQueue = new LLMRequestProcessingQueue(openAiProcessingFunction, 3)
+    private localLLMQueue = new LLMRequestProcessingQueue(localLLMProcessingQueue, 1)
     private wss: EasyWebSocketServer
 
     constructor(wss: EasyWebSocketServer) {

@@ -12,13 +12,13 @@ export interface LLMRequestObserver {
 export class LLMRequestProcessingQueue {
     private observers: LLMRequestObserver[] = []; // Array to hold observers
     private queue: any[] = [];
-    private maxConcurrent: number = 2; // Max number of concurrent operations
+    private maxConcurrent: number = 1; // Max number of concurrent operations
     private processingFunction: ProcessingFunction;
     private currentlyProcessing: number = 0;
     public processingTimeout: number = 30000; // 30 seconds timeout, can be changed
     private results: Map<string, any> = new Map(); // Store results with requestId as key
 
-    constructor(processingFunction?: ProcessingFunction, maxConcurrent: number = 5) {
+    constructor(processingFunction?: ProcessingFunction, maxConcurrent: number = 1) {
         this.maxConcurrent = maxConcurrent;
         this.processingFunction = processingFunction || this.defaultProcessingFunction;
     }
