@@ -60,7 +60,12 @@ export class EasyWebSocketServer {
 
             // Event handler for incoming messages from authorized clients
             socket.on('message', (message: string) => {
-                this.notifyObservers(JSON.parse(message));
+                try {
+                    this.notifyObservers(JSON.parse(message));
+                } catch (error) {
+                    console.error(currentTimestampAndDate() + " Error parsing incoming message: ", error);
+                    socket.close()
+                }
             });
 
             // Event handler for client disconnection
