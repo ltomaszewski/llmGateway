@@ -19,7 +19,7 @@ console.log("Application started with environment: " + configuration.env);
 // Asynchronous function for database operations
 (async () => {
     const wss = new WebSocketServer(8080); // Replace with your desired port number
-    const llmService = new LLMService(wss)
+    const llmService = new LLMService(wss);
     await wss.connect();
 
     // Setup REST Server

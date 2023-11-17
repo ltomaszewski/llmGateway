@@ -39,6 +39,25 @@ export class WebSocketServer {
             console.log('Client connected and authorized.');
             this.authorizedClients.add(socket);
 
+            // Set up a ping interval for the new connection
+            const pingInterval = setInterval(() => {
+                if (socket.readyState === WebSocket.OPEN) {
+                    socket.ping();
+                    // Set a timeout to close the connection if no pong response is received within 20 seconds
+                    const pingTimeout = setTimeout(() => {
+                        if (socket.readyState === WebSocket.OPEN) {
+                            console.log('No pong response received within 20 seconds. Closing the connection.');
+                            socket.terminate(); // Close the connection
+                        }
+                    }, 3000); // Expect a pong response within 20 seconds
+
+                    // Event handler for pong response
+                    socket.once('pong', () => {
+                        clearTimeout(pingTimeout); // Cancel the ping timeout
+                    });
+                }
+            }, 30000); // Send a ping every 15 seconds
+
             // Event handler for incoming messages from authorized clients
             socket.on('message', (message: string) => {
                 console.log(`Received message: ${message}`);
@@ -49,6 +68,7 @@ export class WebSocketServer {
             socket.on('close', () => {
                 console.log('Client disconnected.');
                 this.authorizedClients.delete(socket);
+                clearInterval(pingInterval); // Clean up the ping interval when the client disconnects
             });
         } else {
             console.log('Client connection unauthorized. Closing connection.');
