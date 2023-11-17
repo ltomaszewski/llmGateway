@@ -5,6 +5,7 @@ export enum Provider {
 }
 
 export class LLMRequestDTO {
+    readonly id: string | undefined;
     readonly system: string;
     readonly prompt: string;
     readonly provider: Provider;
@@ -12,12 +13,14 @@ export class LLMRequestDTO {
     readonly callback: string;
 
     constructor(
+        id: string | undefined,
         system: string,
         prompt: string,
         provider: Provider,
         model: string,
         callback: string,
     ) {
+        this.id = id;
         this.system = system;
         this.prompt = prompt;
         this.provider = provider;
@@ -27,6 +30,7 @@ export class LLMRequestDTO {
 
     static createFromObject(obj: any): LLMRequestDTO {
         return new LLMRequestDTO(
+            obj.id,
             obj.system,
             obj.prompt,
             Provider[obj.provider as keyof typeof Provider], // Converts the string to the corresponding enum value

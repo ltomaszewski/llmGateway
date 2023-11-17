@@ -32,7 +32,7 @@ console.log("Application started with environment: " + configuration.env);
     const llmRequestRESTService = new LLMRequestRESTService(llmService);
 
     // Install REST services
-    llmRequestRESTService.installEndpoints(baseApi, app);
+    // llmRequestRESTService.installEndpoints(baseApi, app);
 
     // Start the server
     app.listen(PORT, () => {

@@ -56,7 +56,6 @@ export class WebSocketServer {
         }
     };
 
-
     // Modify sendMessage to accept message as any and convert it to JSON
     public sendMessage(clientSocket: WebSocket, message: any) {
         clientSocket.send(JSON.stringify(message));

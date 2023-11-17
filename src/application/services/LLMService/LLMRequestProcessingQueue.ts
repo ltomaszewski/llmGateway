@@ -14,7 +14,7 @@ export class LLMRequestProcessingQueue {
     private maxConcurrent: number = 2; // Max number of concurrent operations
     private processingFunction: ProcessingFunction;
     private currentlyProcessing: number = 0;
-    public processingTimeout: number = 5000; // 5 seconds timeout, can be changed
+    public processingTimeout: number = 10000; // 5 seconds timeout, can be changed
     private results: Map<string, any> = new Map(); // Store results with requestId as key
 
     constructor(processingFunction?: ProcessingFunction, maxConcurrent: number = 5) {
@@ -23,7 +23,7 @@ export class LLMRequestProcessingQueue {
     }
 
     enqueue(request: LLMRequestDTO): string {
-        const requestId = uuidv4(); // Generate a UUID for the request
+        const requestId = request.id === undefined ? uuidv4() : request.id;
         this.queue.push({ request, requestId });
         this.tryProcessNext();
         return requestId;

@@ -4,6 +4,7 @@ import { LLMRequestObserver, LLMRequestProcessingQueue } from "./LLMRequestProce
 import { LLMResult } from "./LLMResult";
 import { localLLMProcessingQueue } from "./processing/LocalLLMProcessingQueue";
 import { openAiProcessingFunction } from "./processing/OpenAiProcessingFunction";
+import { v4 as uuidv4 } from 'uuid';
 
 export class LLMService {
     private openAiQueue = new LLMRequestProcessingQueue(openAiProcessingFunction)
@@ -16,11 +17,17 @@ export class LLMService {
         const incomeMessageProcessor: MessageObserver = {
             update: (message: any) => {
                 const llmRequest = LLMRequestDTO.createFromObject(message)
-                // Validate the request fields
-                if (!llmRequest.system || !llmRequest.prompt || !llmRequest.provider || !llmRequest.model || !llmRequest.callback) {
-                    throw new Error("All fields are required");
+                try {
+                    // Validate the request fields
+                    if (!llmRequest.system || !llmRequest.prompt || !llmRequest.provider || !llmRequest.model || !llmRequest.callback || !llmRequest.id) {
+                        throw new Error("All fields are required");
+                    }
+                    this.enqueue(llmRequest);
+                } catch (error: any) {
+                    const requestId = llmRequest.id === undefined ? uuidv4() : llmRequest.id;
+                    const result = new LLMResult(requestId, llmRequest, undefined, error.message);
+                    this.wss.broadcastMessage(result)
                 }
-                this.enqueue(llmRequest);
             }
         }
 
