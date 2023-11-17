@@ -1,7 +1,7 @@
-import { LLMRequestDTO } from "../../dtos/LLMRequestDTO";
+import { LLMRequestDTO } from "../../dtos/LLMRequestDTO.js";
 import { v4 as uuidv4 } from 'uuid';
-import { LLMResult } from "./LLMResult";
-import { currentTimestampAndDate } from "../../helpers/Utils";
+import { LLMResult } from "./LLMResult.js";
+import { currentTimestampAndDate } from "../../helpers/Utils.js";
 
 type ProcessingFunction = (request: LLMRequestDTO) => Promise<void>;
 
@@ -15,7 +15,7 @@ export class LLMRequestProcessingQueue {
     private maxConcurrent: number = 2; // Max number of concurrent operations
     private processingFunction: ProcessingFunction;
     private currentlyProcessing: number = 0;
-    public processingTimeout: number = 10000; // 5 seconds timeout, can be changed
+    public processingTimeout: number = 30000; // 30 seconds timeout, can be changed
     private results: Map<string, any> = new Map(); // Store results with requestId as key
 
     constructor(processingFunction?: ProcessingFunction, maxConcurrent: number = 5) {

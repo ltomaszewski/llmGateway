@@ -1,5 +1,5 @@
 import * as r from 'rethinkdb';
-import { Schema } from './Schema';
+import { Schema } from './Schema.js';
 
 // DatabaseRepository - a repository for interacting with RethinkDB databases
 export class DatabaseRepository {

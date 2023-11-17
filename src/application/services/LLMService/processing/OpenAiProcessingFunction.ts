@@ -1,7 +1,7 @@
-import { dotEnv } from "../../../../config/Constants";
-import { LLMRequestDTO } from "../../../dtos/LLMRequestDTO";
+import { dotEnv } from "../../../../config/Constants.js";
+import { LLMRequestDTO } from "../../../dtos/LLMRequestDTO.js";
 import OpenAI from "openai";
-import { currentTimestampAndDate } from "../../../helpers/Utils";
+import { currentTimestampAndDate } from "../../../helpers/Utils.js";
 
 const openai = new OpenAI({
     apiKey: dotEnv.OPENAI_KEY,

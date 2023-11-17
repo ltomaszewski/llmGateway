@@ -1,5 +1,5 @@
 // Importing the Env enum from the Constants module
-import { Env } from "./Constants";
+import { Env } from "./Constants.js";
 
 // Class representing CLI configuration
 export class CLIConfiguration {

@@ -1,6 +1,6 @@
 import express from "express";
-import { LLMRequestDTO } from "../../dtos/LLMRequestDTO";
-import { LLMService } from "../llmService/LLMService";
+import { LLMRequestDTO } from "../../dtos/LLMRequestDTO.js";
+import { LLMService } from "../llmService/LLMService.js";
 
 export class LLMRequestRESTService {
     private llmService: LLMService;

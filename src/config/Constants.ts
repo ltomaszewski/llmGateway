@@ -27,9 +27,11 @@ function getEnvVar(key: string): string {
 export interface ProcessEnv {
     OPENAI_KEY: string;
     WSS_AUTH_TOKEN: string;
+    MODELS_PATH: string;
 }
 
 export const dotEnv: ProcessEnv = {
     OPENAI_KEY: getEnvVar('OPENAI_KEY'),
-    WSS_AUTH_TOKEN: getEnvVar('WSS_AUTH_TOKEN')
+    WSS_AUTH_TOKEN: getEnvVar('WSS_AUTH_TOKEN'),
+    MODELS_PATH: getEnvVar('MODELS_PATH')
 };

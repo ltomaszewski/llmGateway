@@ -1,4 +1,4 @@
-import { LLMRequestDTO } from "../../dtos/LLMRequestDTO";
+import { LLMRequestDTO } from "../../dtos/LLMRequestDTO.js";
 
 export class LLMResult {
     readonly requestId: string;

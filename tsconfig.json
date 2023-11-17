@@ -1,14 +1,19 @@
 {
     "compilerOptions": {
-        "target": "ESNext",
-        "module": "CommonJS",
+        "target": "ES2022",
+        "module": "ESNext",
+        "moduleResolution": "node",
         "outDir": "./dist",
         "rootDir": "./src",
         "esModuleInterop": true,
         "sourceMap": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
-        "strict": true,
-        "allowJs": true
+        "strict": true
+    },
+    "ts-node": {
+        "experimentalSpecifierResolution": "node",
+        "transpileOnly": true,
+        "esm": true,
     }
 }

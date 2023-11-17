@@ -1,5 +1,5 @@
 import * as r from 'rethinkdb';
-import { DatabaseRepository } from './DatabaseRepository';
+import { DatabaseRepository } from './DatabaseRepository.js';
 
 // Schema - responsible for database schema migration
 export class Schema {

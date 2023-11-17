@@ -1,18 +1,18 @@
-import { LLMRequestDTO, Provider } from "../../dtos/LLMRequestDTO";
-import { currentTimestampAndDate } from "../../helpers/Utils";
-import { MessageObserver, WebSocketServer } from "../WebSocketServer";
-import { LLMRequestObserver, LLMRequestProcessingQueue } from "./LLMRequestProcessingQueue";
-import { LLMResult } from "./LLMResult";
-import { localLLMProcessingQueue } from "./processing/LocalLLMProcessingQueue";
-import { openAiProcessingFunction } from "./processing/OpenAiProcessingFunction";
+import { LLMRequestDTO, Provider } from "../../dtos/LLMRequestDTO.js";
+import { currentTimestampAndDate } from "../../helpers/Utils.js";
+import { MessageObserver, EasyWebSocketServer } from "../EasyWebSocketServer.js";
+import { LLMRequestObserver, LLMRequestProcessingQueue } from "./LLMRequestProcessingQueue.js";
+import { LLMResult } from "./LLMResult.js";
+import { localLLMProcessingQueue } from "./processing/LocalLLMProcessingQueue.js";
+import { openAiProcessingFunction } from "./processing/OpenAiProcessingFunction.js";
 import { v4 as uuidv4 } from 'uuid';
 
 export class LLMService {
     private openAiQueue = new LLMRequestProcessingQueue(openAiProcessingFunction)
     private localLLMQueue = new LLMRequestProcessingQueue(localLLMProcessingQueue)
-    private wss: WebSocketServer
+    private wss: EasyWebSocketServer
 
-    constructor(wss: WebSocketServer) {
+    constructor(wss: EasyWebSocketServer) {
         this.wss = wss
 
         const incomeMessageProcessor: MessageObserver = {

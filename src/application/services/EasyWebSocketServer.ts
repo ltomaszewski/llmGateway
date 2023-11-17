@@ -1,19 +1,18 @@
-import WebSocket from 'ws';
-import { dotEnv } from '../../config/Constants';
-import { currentTimestampAndDate } from '../helpers/Utils';
-
+import { dotEnv } from '../../config/Constants.js';
+import { currentTimestampAndDate } from '../helpers/Utils.js';
+import { WebSocketServer, WebSocket } from 'ws'
 // Define an observer interface
 export interface MessageObserver {
     update(message: any): void;
 }
 
-export class WebSocketServer {
-    private wss: WebSocket.Server;
+export class EasyWebSocketServer {
+    private wss: WebSocketServer;
     private messageObservers: MessageObserver[] = [];
     private authorizedClients: Set<WebSocket> = new Set();
 
     constructor(port: number) {
-        this.wss = new WebSocket.Server({ port });
+        this.wss = new WebSocketServer({ port });
         this.wss.on('connection', this.handleConnection);
     }
 
