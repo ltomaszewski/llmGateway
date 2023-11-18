@@ -15,7 +15,7 @@ import path from "path";
 import { CLIConfiguration } from './config/CLIConfiguration.js';
 import { Env, dotEnv } from './config/Constants.js';
 import { EasyWebSocketServer } from './application/services/EasyWebSocketServer.js';
-import { LLMService } from './application/services/llmServicev2/LLMService.js';
+import { LLMService } from './application/services/llmService/LLMService.js';
 
 // // Extracting command line arguments
 const args = process.argv;
