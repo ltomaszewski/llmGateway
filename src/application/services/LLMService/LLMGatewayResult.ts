@@ -1,6 +1,6 @@
 import { LLMRequestDTO } from "../../dtos/LLMRequestDTO.js";
 
-export class LLMResult {
+export class LLMGatewayResult {
     readonly requestId: string;
     readonly request: LLMRequestDTO;
     readonly result: any | undefined;

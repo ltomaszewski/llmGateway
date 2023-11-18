@@ -1,12 +1,12 @@
 import { LLMRequestDTO } from "../../dtos/LLMRequestDTO.js";
 import { v4 as uuidv4 } from 'uuid';
-import { LLMResult } from "./LLMResult.js";
+import { LLMGatewayResult } from "./LLMGatewayResult.js";
 import { currentTimestampAndDate } from "../../helpers/Utils.js";
 
 type ProcessingFunction = (request: LLMRequestDTO) => Promise<void>;
 
 export interface LLMRequestObserver {
-    onRequestProcessed: (requestId: string, result: LLMResult) => void;
+    onRequestProcessed: (requestId: string, result: LLMGatewayResult) => void;
 }
 
 export class LLMRequestProcessingQueue {
@@ -30,7 +30,7 @@ export class LLMRequestProcessingQueue {
         return requestId;
     }
 
-    getResult(requestId: string): LLMResult | undefined {
+    getResult(requestId: string): LLMGatewayResult | undefined {
         if (this.results.has(requestId)) {
             const result = this.results.get(requestId);
             this.results.delete(requestId);  // Remove the result after fetching
@@ -50,7 +50,7 @@ export class LLMRequestProcessingQueue {
     }
 
     // Method to notify all observers
-    notifyObservers(requestId: string, result: LLMResult): void {
+    notifyObservers(requestId: string, result: LLMGatewayResult): void {
         this.observers.forEach(observer => observer.onRequestProcessed(requestId, result));
     }
 
@@ -62,7 +62,7 @@ export class LLMRequestProcessingQueue {
                 this.currentlyProcessing++;
                 this.processWithTimeout(request.request, requestId)
                     .then((result) => {
-                        const llmResult = new LLMResult(requestId, request, result, undefined)
+                        const llmResult = new LLMGatewayResult(requestId, request, result, undefined)
                         this.results.set(requestId, llmResult);
                         this.notifyObservers(requestId, llmResult);
                         console.log(currentTimestampAndDate() + ` Processed: ${requestId}`);
@@ -71,7 +71,7 @@ export class LLMRequestProcessingQueue {
                     })
                     .catch(error => {
                         console.error(currentTimestampAndDate() + ` Error processing request: ${error}`);
-                        const llmResult = new LLMResult(requestId, request, undefined, error.toString())
+                        const llmResult = new LLMGatewayResult(requestId, request, undefined, error.toString())
                         this.results.set(requestId, llmResult);
                         this.notifyObservers(requestId, llmResult);
                         this.currentlyProcessing--;

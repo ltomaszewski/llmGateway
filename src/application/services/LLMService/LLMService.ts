@@ -1,8 +1,8 @@
 import { LLMRequestDTO, Provider } from "../../dtos/LLMRequestDTO.js";
 import { currentTimestampAndDate } from "../../helpers/Utils.js";
 import { MessageObserver, EasyWebSocketServer } from "../EasyWebSocketServer.js";
+import { LLMGatewayResult } from "./LLMGatewayResult.js";
 import { LLMRequestObserver, LLMRequestProcessingQueue } from "./LLMRequestProcessingQueue.js";
-import { LLMResult } from "./LLMResult.js";
 import { localLLMProcessingQueue } from "./processing/LocalLLMProcessingQueue.js";
 import { openAiProcessingFunction } from "./processing/OpenAiProcessingFunction.js";
 import { v4 as uuidv4 } from 'uuid';
@@ -27,14 +27,14 @@ export class LLMService {
                     this.enqueue(request);
                 } catch (error: any) {
                     const requestId = request.id === undefined ? uuidv4() : request.id;
-                    const result = new LLMResult(requestId, request, undefined, error.message);
+                    const result = new LLMGatewayResult(requestId, request, undefined, error.message);
                     this.wss.broadcastMessage(result)
                 }
             }
         }
 
         const webSocketResultProcessor: LLMRequestObserver = {
-            onRequestProcessed: (requestId: string, result: LLMResult) => {
+            onRequestProcessed: (requestId: string, result: LLMGatewayResult) => {
                 this.wss.broadcastMessage(result);
             }
         };
@@ -55,7 +55,7 @@ export class LLMService {
         }
     }
 
-    getResult(requestId: string): LLMResult | undefined {
+    getResult(requestId: string): LLMGatewayResult | undefined {
         let result = this.openAiQueue.getResult(requestId)
         if (result === undefined) {
             result = this.localLLMQueue.getResult(requestId);
