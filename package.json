@@ -3,7 +3,7 @@
   "name": "llmgateway",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "dist/Index.js",
   "scripts": {
     "start": "tsc --build --clean && tsc && pm2 start src/ecosystem.config.cjs --env production",
     "stop": "pm2 stop all"

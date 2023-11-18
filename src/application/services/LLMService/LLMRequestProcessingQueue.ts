@@ -1,7 +1,7 @@
 import { LLMRequestDTO } from "../../dtos/LLMRequestDTO.js";
 import { v4 as uuidv4 } from 'uuid';
-import { LLMGatewayResult } from "./LLMGatewayResult.js";
 import { currentTimestampAndDate } from "../../helpers/Utils.js";
+import { LLMGatewayResult } from "./LLMGatewayResult.js";
 
 type ProcessingFunction = (request: LLMRequestDTO) => Promise<void>;
 
