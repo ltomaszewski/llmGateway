@@ -21,7 +21,7 @@ export class LLMService {
                 console.log(currentTimestampAndDate() + ` Received message: ${request.id}`);
                 try {
                     // Validate the request fields
-                    if (!request.system || !request.prompt || !request.provider || !request.model || !request.id) {
+                    if (!request.system || !request.user || !request.provider || !request.model || !request.id) {
                         throw new Error("All fields are required");
                     }
                     this.enqueue(request);

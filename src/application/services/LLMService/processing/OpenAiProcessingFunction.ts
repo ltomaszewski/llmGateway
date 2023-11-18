@@ -17,18 +17,18 @@ export const openAiProcessingFunction = async (request: LLMRequestDTO): Promise<
             },
             {
                 "role": "user",
-                "content": request.prompt
+                "content": request.user
             }
         ],
         temperature: 1,
-        max_tokens: 256,
+        max_tokens: 14337,
         top_p: 1,
         frequency_penalty: 0,
         presence_penalty: 0,
     });
 
     // Custom logic for processing the request
-    console.log(currentTimestampAndDate() + ` OpenAi Processed: ${request.id}, prompt: ${request.prompt.slice(0, 80)}` + (request.prompt.length > 80 ? '...' : ''));;
+    console.log(currentTimestampAndDate() + ` OpenAi Processed: ${request.id}, prompt: ${request.user.slice(0, 80)}` + (request.user.length > 80 ? '...' : ''));;
     // Simulate processing with a delay
     return new Promise(resolve => resolve(response));
 };
