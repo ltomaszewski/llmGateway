@@ -11,6 +11,7 @@ export class LLMRequestDTO {
     readonly user: string;
     readonly provider: Provider;
     readonly model: string;
+    readonly embed: boolean;
 
     constructor(
         id: string | undefined,
@@ -18,7 +19,8 @@ export class LLMRequestDTO {
         system: string,
         user: string,
         provider: Provider,
-        model: string
+        model: string,
+        embed: boolean = false
     ) {
         this.id = id;
         this.template = template;
@@ -26,6 +28,7 @@ export class LLMRequestDTO {
         this.user = user;
         this.provider = provider;
         this.model = model;
+        this.embed = embed
     }
 
     static createFromObject(obj: any): LLMRequestDTO {
@@ -35,7 +38,8 @@ export class LLMRequestDTO {
             obj.system,
             obj.user,
             Provider[obj.provider as keyof typeof Provider], // Converts the string to the corresponding enum value
-            obj.model
+            obj.model,
+            obj.embed
         );
     }
 
