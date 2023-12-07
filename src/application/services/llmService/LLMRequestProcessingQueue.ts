@@ -62,7 +62,7 @@ export class LLMRequestProcessingQueue {
                 this.currentlyProcessing++;
                 this.processWithTimeout(request.request, requestId)
                     .then((result) => {
-                        const llmResult = new LLMGatewayResult(requestId, request, result, undefined)
+                        const llmResult = new LLMGatewayResult(requestId, request.request, result, undefined)
                         this.results.set(requestId, llmResult);
                         this.notifyObservers(requestId, llmResult);
                         console.log(currentTimestampAndDate() + ` Processed: ${requestId}`);
